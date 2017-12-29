@@ -1,0 +1,4 @@
+Django==2.0
+gunicorn
+whitenoise
+requests
