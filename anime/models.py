@@ -6,12 +6,13 @@ class Subtitle(models.Model):
     id = models.CharField('Language ID', max_length=8, primary_key=True)  # enUS
     srclang = models.CharField('Language Code', max_length=8)  # en
     label = models.CharField('Language Label', max_length=100)  # English
+    priority = models.PositiveSmallIntegerField('Priority', default=0)  # 0
 
     def __str__(self):
         return self.id
 
     class Meta:
-        ordering = ['id']
+        ordering = ['-priority', 'id']
 
 
 class Series(models.Model):
