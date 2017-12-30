@@ -35,7 +35,7 @@ class Series(models.Model):
 
 class EpisodeCrunchyroll(models.Model):
     series = models.ForeignKey(Series, on_delete=models.CASCADE, verbose_name='Series')
-    number = models.SmallIntegerField('Episode Number')
+    number = models.CharField('Episode Number', max_length=5)
     id = models.CharField('ID', max_length=100, primary_key=True)
     page = models.CharField('Webpage', max_length=200)
     name = models.CharField('Episode Title', max_length=100)
@@ -48,5 +48,5 @@ class EpisodeCrunchyroll(models.Model):
         return self.id
 
     class Meta:
-        unique_together = (("series", "id"),)
-        ordering = ['series', 'id']
+        unique_together = (('series', 'number'),)
+        ordering = ['series', 'number']

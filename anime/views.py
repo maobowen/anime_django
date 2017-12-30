@@ -57,7 +57,7 @@ def watch_crunchyroll(request, series_id):
         first_subtitle = True
         for s in subtitles:
             subtitle = {
-                'src': '/static/anime/series/%s/%04d.%s.vtt' % (series.id, episode_number, s.id),
+                'src': '/static/anime/series/%s/%s.%s.vtt' % (series.id, episode_number, s.id),
                 'kind': 'captions',
                 'srclang': s.srclang,
                 'label': s.label,
@@ -70,7 +70,7 @@ def watch_crunchyroll(request, series_id):
         playlist.append({
             'sources': sources,
             'textTracks': text_tracks,
-            'name': 'Episode %s - %s' % (str(episode_number), episode_name),
+            'name': 'Episode %s - %s' % (episode_number, episode_name),
             'poster': episode_poster,
             'thumbnail': episode_thumbnail,
             'description': episode_description,
