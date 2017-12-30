@@ -4,12 +4,17 @@ import urllib.parse
 import re
 import requests
 from xml.etree import ElementTree
-import json
 
 
 # Create your views here.
+def index(request):
+    return render(request, 'anime/index.html', context={
+        'series': Series.objects.all(),
+    })
+
+
 def crunchyroll(request):
-    page_url = urllib.parse.unquote(request.GET.get('url', 'http://www.crunchyroll.com/eromanga-sensei/episode-1-my-little-sister-and-the-sealed-room-734155'))
+    page_url = urllib.parse.unquote(request.GET.get('url', '') + '?skip_wall=1')
     offset = request.GET.get('offset', '0')
     page_content = requests.get(page_url).content.decode('utf-8')
     config_url = urllib.parse.unquote(re.search('config_url":"(.*?)auto_play', page_content).group(1))
@@ -79,10 +84,10 @@ def watch_crunchyroll(request, series_id):
         })
 
 
-def watch(request, series_dir):
+def watch(request, series_id):
     site = request.GET.get('site', 'crunchyroll')
     if site == 'crunchyroll':
-        return watch_crunchyroll(request, series_dir)
+        return watch_crunchyroll(request, series_id)
     else:
         raise Http404()
 

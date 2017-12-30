@@ -1,19 +1,17 @@
+{% extends 'anime/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en" >
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>{{ series_title }}</title>
+
+{% block pre_head_block %}
+    <title>{{ series_title }} | an·i·me</title>
+{% endblock %}
+
+{% block post_head_block %}
     <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/video.js/6.6.0/video-js.min.css'>
     <link rel='stylesheet prefetch' href='https://unpkg.com/videojs-playlist-ui@3.0.0/dist/videojs-playlist-ui.vertical.css'>
     <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/tachyons/4.9.0/tachyons.min.css'>
-    <link rel="stylesheet" href="{% static "anime/css/watch.css" %}">
-</head>
+{% endblock %}
 
-<body>
+{% block body_block %}
     <section class="main-preview-player bg-black flex flex-wrap flex-row-l sans-serif">
         <div class="primary-video relative flex-auto w-100 w-80-l">
             <video id="video-js-player"
@@ -25,11 +23,11 @@
                 <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
             </video>
             <div class="pa3 white">
-                <h1 class="mv0 helvetica fw5 tc" data-video-js-series-title>{{ series_title }}</h1>
-                <h2 class="mv0 sans-serif fw1 tc" data-video-js-episode-title>&nbsp;</h2>
-                <p data-video-js-description>&nbsp;</p>
-                <p data-video-js-subtitles>Available subtitles: {{ subtitles|join:", " }}.</p>
-                <p class="f6 i" data-video-js-remark>{{ series_remark }}</p>
+                <h1 class="mv3 f1 helvetica fw5 tc" data-video-js-series-title>{{ series_title }}</h1>
+                <h2 class="mv2 f2 sans-serif fw1 tc" data-video-js-episode-title>&nbsp;</h2>
+                <p class="mv2 f3 helvetica" data-video-js-description>&nbsp;</p>
+                <p class="mv2 f3 helvetica" data-video-js-subtitles>Available subtitles: {{ subtitles|join:", " }}.</p>
+                <p class="mv2 f4 i helvetica" data-video-js-remark>{{ series_remark }}</p>
             </div>
         </div>
 
@@ -42,13 +40,15 @@
             </div>
         </div>
     </section>
+{% endblock %}
+
+{% block post_body_block %}
     <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.js'></script>
     <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/video.js/6.6.0/video.min.js'></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.12.2/videojs-contrib-hls.min.js"></script>
     <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/videojs-youtube/2.4.1/Youtube.min.js'></script>
     <script type="text/javascript" src='https://unpkg.com/videojs-playlist@3.0.0/dist/videojs-playlist.js'></script>
     <script type="text/javascript" src='https://unpkg.com/videojs-playlist-ui@3.0.0/dist/videojs-playlist-ui.js'></script>
-
     <script>
         var playlist = {{ playlist|safe }};
         var player = videojs(document.getElementById('video-js-player'));
@@ -68,6 +68,4 @@
         player.playlist.autoadvance(0);
         player.playlistUi();
     </script>
-
-</body>
-</html>
+{% endblock %}

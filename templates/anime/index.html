@@ -1,0 +1,72 @@
+{% extends 'anime/base.html' %}
+{% load static %}
+
+{% block pre_head_block %}
+    <title>an·i·me</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+{% endblock %}
+
+{% block body_block %}
+    <section class="section pdb0">
+        <div class="container-fluid">
+            <div class="section-header has-desc mrb50">
+                <h1 class="page-header mrb15">an·i·me</h1>
+                <p><code>an·i·me</code> is a personal project for watching animes.</p>
+            </div>
+            <h2 id="relativeCaption" class="anchor-title mrb35">
+                <a href="#relativeCaption">List of all series</a>
+                <span class="border"></span>
+            </h2>
+            <div class="demo-gallery dark mrb35">
+                <ul id="relative-caption" class="list-unstyled row">
+                    {% for s in series %}
+                        <li class="col-xs-6 col-sm-4 col-md-3" data-src="{{ s.poster }}" data-sub-html=".caption">
+                            <a href="{{ s.id }}/?site={{ s.source }}" title="Watch {{ s.title_en }} on {{ s.source.capitalize }}" {% if not s.available %}class="unavailable"{% endif %}>
+                                <img class="img-responsive" src="{{ s.poster }}">
+                                {% if s.available %}
+                                    <div class="demo-gallery-poster">
+                                        <img src="http://sachinchoolur.github.io/lightGallery/static/img/play-button.png">
+                                    </div>
+                                {% endif %}
+                            </a>
+                            <div class="caption">
+                                <h4>{{ s.title_zh }}</h4><p>{{ s.title_en }}</p>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block post_body_block %}
+    <style type="text/css">
+        .caption {
+            float: left;
+            width: 100%;
+            text-align: center;
+        }
+        .caption p {
+            color: #888;
+            font-size: 12px;
+            margin: 0;
+        }
+        .caption h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        a.unavailable {
+            opacity: 0.3;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        $(document).on('click', 'a', function(e) {
+            if ($(this).hasClass('unavailable'))
+                e.preventDefault();
+        });
+    </script>
+{% endblock %}
