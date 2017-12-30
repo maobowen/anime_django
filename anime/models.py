@@ -24,6 +24,7 @@ class Series(models.Model):
     date = models.DateField('Date')
     subtitles = models.ManyToManyField(Subtitle)
     remark = models.TextField('Remarks')
+    available = models.BooleanField('Available', default=False)
 
     def __str__(self):
         return self.id
