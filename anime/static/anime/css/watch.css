@@ -1,0 +1,10 @@
+.vjs-playlist{
+    -webkit-overflow-scrolling: touch;
+}
+
+.vjs-playlist-item-list li{
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    outline: 1px solid transparent;
+    min-width: 150px;
+}

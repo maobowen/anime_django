@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>{{ series_title }}</title>
+    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/video.js/6.6.0/video-js.min.css'>
+    <link rel='stylesheet prefetch' href='https://unpkg.com/videojs-playlist-ui@3.0.0/dist/videojs-playlist-ui.vertical.css'>
+    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/tachyons/4.9.0/tachyons.min.css'>
+    <link rel="stylesheet" href="{% static "anime/css/watch.css" %}">
+</head>
+
+<body>
+    <section class="main-preview-player bg-black flex flex-wrap flex-row-l sans-serif">
+        <div class="primary-video relative flex-auto w-100 w-80-l">
+            <video id="video-js-player"
+                   class="video-js vjs-fluid vjs-default-skin vjs-big-play-centered"
+                   controls
+                   preload="auto"
+                   crossorigin="anonymous"
+                   data-setup='{"techOrder": ["youtube", "html5"]}'>
+                <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+            </video>
+            <div class="pa3 white">
+                <h1 class="mv0 helvetica fw5 tc" data-video-js-series-title>{{ series_title }}</h1>
+                <h2 class="mv0 sans-serif fw1 tc" data-video-js-episode-title>&nbsp;</h2>
+                <p data-video-js-description>&nbsp;</p>
+                <p data-video-js-subtitles>Available subtitles: {{ subtitles|join:", " }}.</p>
+                <p class="f6 i" data-video-js-remark>{{ series_remark }}</p>
+            </div>
+        </div>
+
+        <div class="playlist-container w-100 w-20-l relative">
+            <p class="dn-l ma3 gray bg-black ttu">Scroll →</p>
+            <div class="vjs-playlist absolute-l absolute--fill ma0 overflow-x-hidden-l overflow-y-hidden overflow-y-scroll-l">
+                <ol class="vjs-playlist-item-list flex flex-row flex-column-l">
+                    <li class="dn db-l tc pa3 bg-black">Scroll ↓</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+    <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.js'></script>
+    <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/video.js/6.6.0/video.min.js'></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.12.2/videojs-contrib-hls.min.js"></script>
+    <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/videojs-youtube/2.4.1/Youtube.min.js'></script>
+    <script type="text/javascript" src='https://unpkg.com/videojs-playlist@3.0.0/dist/videojs-playlist.js'></script>
+    <script type="text/javascript" src='https://unpkg.com/videojs-playlist-ui@3.0.0/dist/videojs-playlist-ui.js'></script>
+
+    <script>
+        var playlist = {{ playlist|safe }};
+        var player = videojs(document.getElementById('video-js-player'));
+
+        var description = document.querySelector('[data-video-js-description]');
+        var episode_title = document.querySelector('[data-video-js-episode-title]');
+
+        player.on('loadedmetadata', function() {
+            i = player.playlist.currentItem();
+            var episode_title_text = decodeURI(playlist[i].name) || " ";
+	        var description_text =  decodeURI(playlist[i].description) || " ";
+            episode_title.textContent = episode_title_text;
+	        description.textContent = description_text;
+        });
+
+        player.playlist(playlist);
+        player.playlist.autoadvance(0);
+        player.playlistUi();
+    </script>
+
+</body>
+</html>
