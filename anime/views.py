@@ -4,6 +4,9 @@ import urllib.parse
 import re
 import requests
 from xml.etree import ElementTree
+import json
+
+USE_LOCAL_CONFIG = False  # Enable this to use local configuration files (for episodes only)
 
 
 # Create your views here.
@@ -27,6 +30,40 @@ def crunchyroll(request):
     return redirect(video_1080p_url)
 
 
+def append_playlist_crunchyroll(
+        playlist, series, subtitles, episode_number, episode_url, episode_offset,
+        episode_poster, episode_thumbnail, episode_name, episode_description):
+    sources = []
+    source = {
+        'src': '/anime/crunchyroll/?url=%s&offset=%s' % (urllib.parse.quote(episode_url), episode_offset),
+        'type': 'application/x-mpegURL',
+    }
+    sources.append(source)
+    text_tracks = []
+    first_subtitle = True
+    for s in subtitles:
+        subtitle = {
+            'src': '/static/anime/series/%s/%s.%s.vtt' % (series.id, episode_number, s.id),
+            'kind': 'captions',
+            'srclang': s.srclang,
+            'label': s.label,
+        }
+        if first_subtitle:
+            first_subtitle = False
+            subtitle['default'] = 1
+        text_tracks.append(subtitle)
+
+    playlist.append({
+        'sources': sources,
+        'textTracks': text_tracks,
+        'name': 'Episode %s - %s' % (episode_number, episode_name),
+        'poster': episode_poster,
+        'thumbnail': episode_thumbnail,
+        'description': episode_description,
+        'series_title': series.title_en,
+    })
+
+
 def watch_crunchyroll(request, series_id):
     series = get_object_or_404(Series, id=series_id.strip().lower())
     # Render available subtitles
@@ -36,52 +73,44 @@ def watch_crunchyroll(request, series_id):
         subtitles_text.append(s.label)
     # Generate playlist
     playlist = []
-    episodes = get_list_or_404(EpisodeCrunchyroll, series=series)
-    for e in episodes:
-        episode_number = e.number
-        episode_url = 'http://www.crunchyroll.com/' + series.original_id + '/' + e.page
-        episode_offset = e.offset
-        episode_poster = e.poster
-        episode_thumbnail = re.sub('_full', '_wide', episode_poster)
-        episode_name = e.name
-        episode_description = e.description
 
-        # Write configuration to playlist
-        sources = []
-        source = {
-            'src': '/anime/crunchyroll/?url=%s&offset=%s' % (urllib.parse.quote(episode_url), episode_offset),
-            'type': 'application/x-mpegURL',
-        }
-        sources.append(source)
-        text_tracks = []
-        first_subtitle = True
-        for s in subtitles:
-            subtitle = {
-                'src': '/static/anime/series/%s/%s.%s.vtt' % (series.id, episode_number, s.id),
-                'kind': 'captions',
-                'srclang': s.srclang,
-                'label': s.label,
-            }
-            if first_subtitle:
-                first_subtitle = False
-                subtitle['default'] = 1
-            text_tracks.append(subtitle)
+    if USE_LOCAL_CONFIG:
+        with open('anime/static/anime/series/%s/crunchyroll.json' % series_id, 'r') as f:
+            episodes = json.load(f)
+            for e in episodes:
+                episode_number = e['number']
+                episode_url = 'http://www.crunchyroll.com/' + series.original_id + '/' + e['page']
+                episode_offset = e['offset']
+                episode_poster = e['poster']
+                episode_thumbnail = re.sub('_full', '_wide', episode_poster)
+                episode_name = e['name']
+                episode_description = e['description']
+                append_playlist_crunchyroll(
+                    playlist, series, subtitles, episode_number, episode_url, episode_offset,
+                    episode_poster, episode_thumbnail, episode_name, episode_description
+                )
 
-        playlist.append({
-            'sources': sources,
-            'textTracks': text_tracks,
-            'name': 'Episode %s - %s' % (episode_number, episode_name),
-            'poster': episode_poster,
-            'thumbnail': episode_thumbnail,
-            'description': episode_description,
-            'series_title': series.title_en,
-        })
-        return render(request, 'anime/watch.html', context={
-            'series_title': series.title_en,
-            'subtitles': subtitles_text,
-            'series_remark': series.remark,
-            'playlist': playlist,
-        })
+    else:
+        episodes = get_list_or_404(EpisodeCrunchyroll, series=series)
+        for e in episodes:
+            episode_number = e.number
+            episode_url = 'http://www.crunchyroll.com/' + series.original_id + '/' + e.page
+            episode_offset = e.offset
+            episode_poster = e.poster
+            episode_thumbnail = re.sub('_full', '_wide', episode_poster)
+            episode_name = e.name
+            episode_description = e.description
+            append_playlist_crunchyroll(
+                playlist, series, subtitles, episode_number, episode_url, episode_offset,
+                episode_poster, episode_thumbnail, episode_name, episode_description
+            )
+
+    return render(request, 'anime/watch.html', context={
+        'series_title': series.title_en,
+        'subtitles': subtitles_text,
+        'series_remark': series.remark,
+        'playlist': playlist,
+    })
 
 
 def watch(request, series_id):
