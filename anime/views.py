@@ -6,12 +6,14 @@ import requests
 from xml.etree import ElementTree
 import json
 
-USE_LOCAL_CONFIG = False  # Enable this to use local configuration files (for episodes only)
+USE_LOCAL_CONFIG = True  # Enable this to use local configuration files (for episodes only)
 
 
 # Create your views here.
 def index(request):
+    sources = Series.objects.values_list('source', flat=True).distinct().order_by()
     return render(request, 'anime/index.html', context={
+        'souces': sources,
         'series': Series.objects.all(),
     })
 
@@ -119,4 +121,3 @@ def watch(request, series_id):
         return watch_crunchyroll(request, series_id)
     else:
         raise Http404()
-

@@ -14,32 +14,40 @@
                 <h1 class="page-header mrb15">an·i·me</h1>
                 <p><code>an·i·me</code> is a personal project for watching animes.</p>
             </div>
-            <h2 id="relativeCaption" class="anchor-title mrb35">
-                <a href="#relativeCaption">List of all series</a>
-                <span class="border"></span>
-            </h2>
-            <div class="demo-gallery dark mrb35">
-                <ul id="relative-caption" class="list-unstyled row">
-                    {% for s in series %}
-                        <li class="col-xs-6 col-sm-3 col-md-2" data-src="{{ s.poster }}" data-sub-html=".caption">
-                            <a href="{{ s.id }}/?site={{ s.source }}" title="Watch {{ s.title_en }} on {{ s.source.capitalize }}" {% if not s.available %}class="unavailable"{% endif %}>
-                                <img class="img-responsive" src="{{ s.poster }}">
-                                {% if s.available %}
-                                    <div class="demo-gallery-poster">
-                                        <img src="http://sachinchoolur.github.io/lightGallery/static/img/play-button.png">
-                                    </div>
-                                {% endif %}
-                            </a>
-                            <div class="caption">
-                                <h4>{{ s.title_zh }}</h4>
-                                <p>{{ s.title_en }}</p>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
         </div>
     </section>
+    {% for src in souces %}
+        <section class="section pdb0{% if forloop.counter0|divisibleby:2 %} highlight{% endif %}">
+            <div class="container-fluid">
+                <h2 id="series{{ src.capitalize }}" class="anchor-title mrb35">
+                    <a href="#series{{ src.capitalize }}">Series on {{ src.capitalize }}</a>
+                    <span class="border"></span>
+                </h2>
+                <div class="demo-gallery dark mrb35">
+                    <ul id="relative-caption" class="list-unstyled row">
+                        {% for s in series %}
+                            {% if s.source == src %}
+                                <li class="col-xs-6 col-sm-3 col-md-2" data-src="{{ s.poster }}" data-sub-html=".caption">
+                                    <a href="{{ s.id }}/?site={{ s.source }}" title="Watch {{ s.title_en }} on {{ s.source.capitalize }}" {% if not s.available %}class="unavailable"{% endif %}>
+                                        <img class="img-responsive" src="{{ s.poster }}">
+                                        {% if s.available %}
+                                            <div class="demo-gallery-poster">
+                                                <img src="http://sachinchoolur.github.io/lightGallery/static/img/play-button.png">
+                                            </div>
+                                        {% endif %}
+                                    </a>
+                                    <div class="caption">
+                                        <h4>{{ s.title_zh }}</h4>
+                                        <p>{{ s.title_en }}</p>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </section>
+    {% endfor %}
 {% endblock %}
 
 {% block post_body_block %}

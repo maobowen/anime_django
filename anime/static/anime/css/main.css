@@ -574,6 +574,9 @@ code {
   padding: 50px 0 40px;
   border-bottom: 1px solid #f1f1f1;
 }
+.section.highlight {
+  background-color: #FAFAFA;
+}
 .section .section-header h1 {
   text-align: left;
 }
