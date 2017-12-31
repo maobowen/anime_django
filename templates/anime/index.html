@@ -21,7 +21,7 @@
             <div class="demo-gallery dark mrb35">
                 <ul id="relative-caption" class="list-unstyled row">
                     {% for s in series %}
-                        <li class="col-xs-6 col-sm-4 col-md-3" data-src="{{ s.poster }}" data-sub-html=".caption">
+                        <li class="col-xs-6 col-sm-3 col-md-2" data-src="{{ s.poster }}" data-sub-html=".caption">
                             <a href="{{ s.id }}/?site={{ s.source }}" title="Watch {{ s.title_en }} on {{ s.source.capitalize }}" {% if not s.available %}class="unavailable"{% endif %}>
                                 <img class="img-responsive" src="{{ s.poster }}">
                                 {% if s.available %}
@@ -31,7 +31,8 @@
                                 {% endif %}
                             </a>
                             <div class="caption">
-                                <h4>{{ s.title_zh }}</h4><p>{{ s.title_en }}</p>
+                                <h4>{{ s.title_zh }}</h4>
+                                <p>{{ s.title_en }}</p>
                             </div>
                         </li>
                     {% endfor %}
@@ -47,6 +48,9 @@
             float: left;
             width: 100%;
             text-align: center;
+            height: 7em;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .caption p {
             color: #888;
