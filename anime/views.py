@@ -67,7 +67,7 @@ def append_playlist_crunchyroll(
 
 
 def watch_crunchyroll(request, series_id):
-    series = get_object_or_404(Series, id=series_id.strip().lower())
+    series = get_object_or_404(Series, id=series_id.strip())
     # Render available subtitles
     subtitles = series.subtitles.all()
     subtitles_text = []
