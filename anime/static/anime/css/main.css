@@ -201,6 +201,11 @@ body {
   color: #333333;
   background-color: #fff;
 }
+button {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
 a {
   color: #ce4844;
   text-decoration: none;
@@ -214,6 +219,16 @@ a:focus {
   outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
 img {
   vertical-align: middle;
@@ -394,6 +409,35 @@ code {
     margin-left: -15px;
   }
 }
+.navbar-toggle {
+  position: relative;
+  float: right;
+  margin-right: 15px;
+  padding: 9px 10px;
+  margin-top: 18px;
+  margin-bottom: 18px;
+  background-color: transparent;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 2px;
+}
+.navbar-toggle:focus {
+  outline: 0;
+}
+.navbar-toggle .icon-bar {
+  display: block;
+  width: 22px;
+  height: 2px;
+  border-radius: 1px;
+}
+.navbar-toggle .icon-bar + .icon-bar {
+  margin-top: 4px;
+}
+@media (min-width: 768px) {
+  .navbar-toggle {
+    display: none;
+  }
+}
 .navbar-nav {
   margin: 12.5px -15px;
 }
@@ -438,8 +482,50 @@ code {
   color: #FFF;
   background-color: transparent;
 }
+.navbar-default .navbar-toggle {
+  border-color: #FFF;
+  -webkit-transition: background-color 0.15s ease 0s;
+  -o-transition: background-color 0.15s ease 0s;
+  transition: background-color 0.15s ease 0s;
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+  background-color: #FFF;
+}
+.navbar-default .navbar-toggle:hover .icon-bar,
+.navbar-default .navbar-toggle:focus .icon-bar {
+  background-color: #152836;
+}
+.navbar-default .navbar-toggle .icon-bar {
+  background-color: #FFF;
+  -webkit-transition: background-color 0.1s ease 0s;
+  -o-transition: background-color 0.1s ease 0s;
+  transition: background-color 0.1s ease 0s;
+}
 .navbar-default .navbar-collapse {
   border-color: #0e1a24;
+}
+@media (min-width: 768px) {
+  .navbar-right .dropdown-menu {
+    right: 0;
+    left: auto;
+  }
+  .navbar-right .dropdown-menu-left {
+    right: auto;
+    left: 0;
+  }
+}
+@media (min-width: 768px) {
+  .navbar-left {
+    float: left !important;
+  }
+  .navbar-right {
+    float: right !important;
+    margin-right: -15px;
+  }
+  .navbar-right ~ .navbar-right {
+    margin-right: 0;
+  }
 }
 
 
