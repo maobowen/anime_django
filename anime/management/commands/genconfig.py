@@ -23,6 +23,8 @@ class Command(BaseCommand):
                             help='source of the series (default: %(default)s)')
         parser.add_argument('--use-db', dest='local', action='store_false', help='if set, a fixture will be generated')
         parser.set_defaults(local=True)
+        parser.add_argument('--username', dest='username', action='store', help='username (optional)')
+        parser.add_argument('--password', dest='password', action='store', help='password (optional)')
 
     @staticmethod
     def unidecode(string):
@@ -54,40 +56,50 @@ class Command(BaseCommand):
         ydl_opts = {
             'forcejson': True,
             'simulate': True,
+            'ignoreerrors': True,
         }
+        if options['username'] is not None and options['password'] is not None:
+            ydl_opts['username'] = options['username']
+            ydl_opts['password'] = options['password']
+
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(series_url, download=False)
             all_episodes = list()
             for e in info['entries']:
-                self.stdout.write('Processing episode %s' % str(e['episode_number']))
-                if not re.search('\(Dub\)', e['title']):
-                    number = str(e['episode_number'])
-                    page = e['webpage_url_basename']
-                    name = Command.unidecode(e['episode'])
-                    poster = e['thumbnail']
-                    description = Command.unidecode(e['description'])
-                    duration = None
-                    if source == 'crunchyroll':
-                        duration = Command.get_duration_crunchyroll(e['webpage_url'])
-                    parameters = {
-                        'number': number,
-                        'page': page,
-                        'offset': 2,
-                        'name': name,
-                        'poster': poster,
-                        'description': description,
-                        'duration': duration,
-                    }
-
-                    if options['local']:
-                        all_episodes.append(parameters)
+                if e is not None and not re.search('\(Dub\)', e['title']):
+                    season = e['season_number']
+                    match = re.search('_S(\d+)$', series_id)
+                    if match and season is not None and season != int(match.group(1)):  # Season not match
+                        pass
                     else:
-                        parameters['series'] = series_id
-                        all_episodes.append({
-                            'model': 'anime.episode%s' % source,
-                            'pk': "%s_%s" % (series_id, number),
-                            'fields': parameters,
-                        })
+                        number = str(e['episode_number'])
+                        self.stdout.write('Processing episode %s' % number)
+                        page = e['webpage_url_basename']
+                        name = Command.unidecode(e['episode'])
+                        poster = e['thumbnail']
+                        description = Command.unidecode(e['description'])
+                        duration = None
+                        if source == 'crunchyroll':
+                            duration = Command.get_duration_crunchyroll(e['webpage_url'])
+                        parameters = {
+                            'number': number,
+                            'page': page,
+                            'offset': 2,
+                            'name': name,
+                            'poster': poster,
+                            'description': description,
+                            'duration': duration,
+                        }
+
+                        if options['local']:
+                            all_episodes.append(parameters)
+                        else:
+                            parameters['series'] = series_id
+                            all_episodes.append({
+                                'model': 'anime.episode%s' % source,
+                                'pk': "%s_%s" % (series_id, number),
+                                'fields': parameters,
+                            })
 
             json_str = json.dumps(all_episodes, indent=4)
             filename = '%s.json' % source if options['local'] else '%s_fixture.json' % source
