@@ -34,7 +34,7 @@ def crunchyroll(request):
 
 def append_playlist_crunchyroll(
         playlist, series, subtitles, episode_number, episode_url, episode_offset,
-        episode_poster, episode_thumbnail, episode_name, episode_description):
+        episode_poster, episode_thumbnail, episode_name, episode_description, episode_duration):
     sources = []
     source = {
         'src': '/anime/crunchyroll/?url=%s&offset=%s' % (urllib.parse.quote(episode_url), episode_offset),
@@ -62,6 +62,7 @@ def append_playlist_crunchyroll(
         'poster': episode_poster,
         'thumbnail': episode_thumbnail,
         'description': episode_description,
+        'duration': episode_duration,
         'series_title': series.title_en,
     })
 
@@ -87,9 +88,10 @@ def watch_crunchyroll(request, series_id):
                 episode_thumbnail = re.sub('_full', '_wide', episode_poster)
                 episode_name = e['name']
                 episode_description = e['description']
+                episode_duration = float(e['duration'])
                 append_playlist_crunchyroll(
                     playlist, series, subtitles, episode_number, episode_url, episode_offset,
-                    episode_poster, episode_thumbnail, episode_name, episode_description
+                    episode_poster, episode_thumbnail, episode_name, episode_description, episode_duration
                 )
 
     else:
@@ -102,9 +104,10 @@ def watch_crunchyroll(request, series_id):
             episode_thumbnail = re.sub('_full', '_wide', episode_poster)
             episode_name = e.name
             episode_description = e.description
+            episode_duration = e.duration.total_seconds()
             append_playlist_crunchyroll(
                 playlist, series, subtitles, episode_number, episode_url, episode_offset,
-                episode_poster, episode_thumbnail, episode_name, episode_description
+                episode_poster, episode_thumbnail, episode_name, episode_description, episode_duration
             )
 
     return render(request, 'anime/watch.html', context={
