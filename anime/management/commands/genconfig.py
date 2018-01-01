@@ -25,6 +25,15 @@ class Command(BaseCommand):
         parser.set_defaults(local=True)
 
     @staticmethod
+    def unidecode(string):
+        string = re.sub(u'[\u201c\u201d]', '"', string)  # Convert double quotation marks
+        string = re.sub(u'[\u2018\u2019]', "'", string)  # Convert single quotation marks
+        string = re.sub(u'\u2026', "...", string)  # Convert horizontal ellipsis
+        string = re.sub("[\r\n]", "", string)  # Remove newlines
+        string = re.sub(' +', ' ', string)  # Remove extra spaces
+        return string
+
+    @staticmethod
     def get_duration_crunchyroll(page_url):
         page_url = urllib.parse.unquote(page_url + '?skip_wall=1')
         page_content = requests.get(page_url).content.decode('utf-8')
@@ -54,37 +63,30 @@ class Command(BaseCommand):
                 if not re.search('\(Dub\)', e['title']):
                     number = str(e['episode_number'])
                     page = e['webpage_url_basename']
-                    name = e['episode']
+                    name = Command.unidecode(e['episode'])
                     poster = e['thumbnail']
-                    description = e['description']
+                    description = Command.unidecode(e['description'])
                     duration = None
                     if source == 'crunchyroll':
                         duration = Command.get_duration_crunchyroll(e['webpage_url'])
+                    parameters = {
+                        'number': number,
+                        'page': page,
+                        'offset': 2,
+                        'name': name,
+                        'poster': poster,
+                        'description': description,
+                        'duration': duration,
+                    }
 
                     if options['local']:
-                        all_episodes.append({
-                            'number': number,
-                            'page': page,
-                            'offset': 2,
-                            'name': name,
-                            'poster': poster,
-                            'description': description,
-                            'duration': duration,
-                        })
+                        all_episodes.append(parameters)
                     else:
+                        parameters['series'] = series_id
                         all_episodes.append({
                             'model': 'anime.episode%s' % source,
                             'pk': "%s_%s" % (series_id, number),
-                            'fields': {
-                                'series': series_id,
-                                'number': number,
-                                'page': page,
-                                'offset': 2,
-                                'name': name,
-                                'poster': poster,
-                                'description': description,
-                                'duration': duration,
-                            },
+                            'fields': parameters,
                         })
 
             json_str = json.dumps(all_episodes, indent=4)
