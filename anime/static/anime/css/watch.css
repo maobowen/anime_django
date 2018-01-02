@@ -8,3 +8,7 @@
     outline: 1px solid transparent;
     min-width: 150px;
 }
+body {
+  padding-bottom: 120px;
+  background-color: black;
+}
