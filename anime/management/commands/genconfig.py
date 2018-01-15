@@ -71,8 +71,6 @@ class Command(BaseCommand):
                     video_480p_filename = re.search('_(.*?).mp4', video_480p_url).group(1)
                     video_1080p_filename = re.search('_(.*?).mp4', video_1080p_url).group(1)
                     offset = int(video_1080p_filename) - int(video_480p_filename)
-                    if offset == 0:
-                        offset = 2
 
         self.stdout.write('Crunchyroll offset: %d' % offset)
         return offset
