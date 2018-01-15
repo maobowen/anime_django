@@ -30,8 +30,9 @@ class Command(BaseCommand):
     def unidecode(string):
         string = re.sub(u'[\u201c\u201d]', '"', string)  # Convert double quotation marks
         string = re.sub(u'[\u2018\u2019]', "'", string)  # Convert single quotation marks
-        string = re.sub(u'\u2026', "...", string)  # Convert horizontal ellipsis
-        string = re.sub("[\r\n]", "", string)  # Remove newlines
+        string = re.sub(u'\u2026', '...', string)  # Convert horizontal ellipsis
+        string = re.sub('[\r\n]', '', string)  # Remove newlines
+        string = re.sub(u'\u00a0', '', string)  # Remove no-breaking space
         string = re.sub(' +', ' ', string)  # Remove extra spaces
         return string
 
@@ -44,6 +45,37 @@ class Command(BaseCommand):
         tree = ElementTree.fromstring(config_content)
         duration = tree.find('.//{default}preload/stream_info/metadata/duration').text
         return duration
+
+    def get_offset_crunchyroll(self, page_url, username, password, video_1080p_url):
+        if username is None or password is None:  # Not premium account
+            offset = 2
+        else:
+            page_url = urllib.parse.unquote(page_url + '?skip_wall=1')
+            ydl_opts = {
+                'forceurl': True,
+                'simulate': True,
+                'ignoreerrors': True,
+            }
+            ydl_opts_premium = {
+                'forceurl': True,
+                'simulate': True,
+                'ignoreerrors': True,
+                'username': username,
+                'password': password,
+            }
+
+            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                with youtube_dl.YoutubeDL(ydl_opts_premium) as ydl_premium:
+                    video_480p_info = ydl.extract_info(page_url, download=False)
+                    video_480p_url = video_480p_info.get('url', None)
+                    video_480p_filename = re.search('_(.*?).mp4', video_480p_url).group(1)
+                    video_1080p_filename = re.search('_(.*?).mp4', video_1080p_url).group(1)
+                    offset = int(video_1080p_filename) - int(video_480p_filename)
+                    if offset == 0:
+                        offset = 2
+
+        self.stdout.write('Crunchyroll offset: %d' % offset)
+        return offset
 
     def handle(self, *args, **options):
         series_id = options['series_id']
@@ -78,13 +110,17 @@ class Command(BaseCommand):
                         name = Command.unidecode(e['episode'])
                         poster = e['thumbnail']
                         description = Command.unidecode(e['description'])
+                        offset = 0
+                        if source == 'crunchyroll':
+                            offset = self.get_offset_crunchyroll(
+                                e['webpage_url'], options['username'], options['password'], e.get('url', None))
                         duration = None
                         if source == 'crunchyroll':
                             duration = Command.get_duration_crunchyroll(e['webpage_url'])
                         parameters = {
                             'number': number,
                             'page': page,
-                            'offset': 2,
+                            'offset': offset,
                             'name': name,
                             'poster': poster,
                             'description': description,
