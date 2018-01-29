@@ -27,6 +27,7 @@
                 <h2 class="mv2 f2 sans-serif fw1 tc" data-video-js-episode-title><i class="fa fa-circle-o-notch fa-spin fa-fw"></i>&nbsp;&nbsp;Loading episode title...</h2>
                 <p class="mv2 f3 helvetica" data-video-js-description><i class="fa fa-circle-o-notch fa-spin fa-fw"></i>&nbsp;&nbsp;Loading description...</p>
                 <p class="mv2 f3 helvetica" data-video-js-subtitles>Available subtitles: {{ subtitles|join:", " }}.</p>
+                <p class="mv2 f3 helvetica">Resolution: <span data-video-js-resolution><i class="fa fa-circle-o-notch fa-spin fa-fw"></i>&nbsp;&nbsp;Loading...</span></p>
                 <p class="mv2 f4 i helvetica" data-video-js-remark>{{ series_remark }}</p>
             </div>
         </div>
@@ -55,6 +56,7 @@
 
         var description = document.querySelector('[data-video-js-description]');
         var episode_title = document.querySelector('[data-video-js-episode-title]');
+        var resolution = document.querySelector('[data-video-js-resolution]');
 
         player.on('loadedmetadata', function() {
             i = player.playlist.currentItem();
@@ -62,6 +64,12 @@
 	        var description_text =  decodeURI(playlist[i].description) || " ";
             episode_title.textContent = episode_title_text;
 	        description.textContent = description_text;
+        });
+
+        player.on('loadeddata', function() {
+            setTimeout(function(){
+                resolution.textContent = player.videoWidth() + " × " + player.videoHeight();
+            }, 2000);
         });
 
         player.playlist(playlist);
