@@ -9,9 +9,9 @@
     <meta name="author" content="Bowen Mao">
     {% block pre_head_block %}{% endblock %}
     <link href="{% static "anime/css/main.css" %}" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/tachyons/4.9.0/tachyons.min.css'>
     {% block post_head_block %}{% endblock %}
+    <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
     <!--[if lt IE 9]>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
@@ -42,13 +42,14 @@
     </nav>
     {% block body_block %}{% endblock %}
     <footer>
-        <p>© Bowen Mao {% now 'Y' %}. All Rights Reserved.</p>
+        <p>&copy; <a href="https://bmao.tech/">Bowen Mao</a> {% now 'Y' %}. All Rights Reserved.</p>
         <p>Theme adapted from <a target="_blank" href="http://sachinchoolur.github.io/lightGallery/">LightGallery</a>.</p>
-        <a target="_blank" href="https://github.com/maobowen" class="f2 fa fa-github"></a>
-        <a target="_blank" href="https://facebook.com/maobowen" class="f2 fa fa-facebook"></a>
-        <a target="_blank" href="https://twitter.com/maobowen3" class="f2 fa fa-twitter"></a>
-        <a target="_blank" href="http://weibo.com/maobowen3" class="f2 fa fa-weibo"></a>
-        <a target="_blank" href="https://www.linkedin.com/in/bowen-mao" class="f2 fa fa-linkedin"></a>
+        <a target="_blank" href="https://github.com/maobowen"><i class="f2 fab fa-github"></i></a>
+        <a target="_blank" href="https://gitlab.com/maobowen"><i class="f2 fab fa-gitlab"></i></a>
+        <a target="_blank" href="https://facebook.com/maobowen"><i class="f2 fab fa-facebook"></i></a>
+        <a target="_blank" href="https://twitter.com/maobowen3"><i  class="f2 fab fa-twitter"></i></a>
+        <a target="_blank" href="http://weibo.com/maobowen3"><i class="f2 fab fa-weibo"></i></a>
+        <a target="_blank" href="https://www.linkedin.com/in/bowen-mao"><i class="f2 fab fa-linkedin"></i></a>
     </footer>
     {% block post_body_block %}{% endblock %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
