@@ -1,13 +1,18 @@
-.vjs-playlist{
+.vjs-playlist {
     -webkit-overflow-scrolling: touch;
 }
 
-.vjs-playlist-item-list li{
+.vjs-playlist-item-list li {
     -ms-flex-negative: 0;
     flex-shrink: 0;
     outline: 1px solid transparent;
     min-width: 150px;
 }
+
+.vjs-menu-item-text {
+    text-transform: none;
+}
+
 body {
   padding-bottom: 120px;
   background-color: black;

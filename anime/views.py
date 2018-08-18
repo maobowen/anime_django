@@ -36,11 +36,31 @@ def append_playlist_crunchyroll(
         playlist, series, subtitles, episode_number, episode_url, episode_offset,
         episode_poster, episode_thumbnail, episode_name, episode_description, episode_duration):
     sources = []
-    source = {
-        'src': '/anime/crunchyroll/?url=%s&offset=%s' % (urllib.parse.quote(episode_url), episode_offset),
-        'type': 'application/x-mpegURL',
-    }
-    sources.append(source)
+    if episode_offset == 0 or 'PV' in episode_number:
+        source = {
+            'src': '/anime/crunchyroll/?url=%s&offset=%s' % (urllib.parse.quote(episode_url), episode_offset),
+            'type': 'application/x-mpegURL',
+        }
+        sources.append(source)
+    else:
+        source_1080p = {
+            'src': '/anime/crunchyroll/?url=%s&offset=%s' % (urllib.parse.quote(episode_url), episode_offset),
+            'type': 'application/x-mpegURL',
+            'label': '1080p',
+        }
+        source_720p = {
+            'src': '/anime/crunchyroll/?url=%s&offset=%s' % (urllib.parse.quote(episode_url), episode_offset >> 1),
+            'type': 'application/x-mpegURL',
+            'label': '720p',
+        }
+        source_480p = {
+            'src': '/anime/crunchyroll/?url=%s&offset=%s' % (urllib.parse.quote(episode_url), 0),
+            'type': 'application/x-mpegURL',
+            'label': '480p',
+        }
+        sources.append(source_1080p)
+        sources.append(source_720p)
+        sources.append(source_480p)
     text_tracks = []
     first_subtitle = True
     for s in subtitles:
