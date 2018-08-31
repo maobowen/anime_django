@@ -22,7 +22,7 @@ def crunchyroll(request):
     page_url = urllib.parse.unquote(request.GET.get('url', '') + '?skip_wall=1')
     offset = request.GET.get('offset', '0')
     page_content = requests.get(page_url).content.decode('utf-8')
-    config_url = urllib.parse.unquote(re.search('config_url":"(.*?)auto_play', page_content).group(1))
+    config_url = urllib.parse.unquote(re.search('config_url=(.*?)auto_play', page_content).group(1))
     config_content = requests.post(config_url, data=dict(current_page=page_url), allow_redirects=True).content
     tree = ElementTree.fromstring(config_content)
     video_480p_url = tree.find('.//{default}preload/stream_info/file').text
