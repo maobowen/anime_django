@@ -1,5 +1,5 @@
-Django==2.0
-gunicorn
-whitenoise
-requests
-youtube_dl
+Django>=2.0
+gunicorn>=19.9.0
+whitenoise>=3.3.1
+requests>=2.19.1
+youtube_dl>=2018.9.8

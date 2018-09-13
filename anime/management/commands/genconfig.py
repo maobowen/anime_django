@@ -40,7 +40,7 @@ class Command(BaseCommand):
     def get_duration_crunchyroll(page_url):
         page_url = urllib.parse.unquote(page_url + '?skip_wall=1')
         page_content = requests.get(page_url).content.decode('utf-8')
-        config_url = urllib.parse.unquote(re.search('config_url":"(.*?)auto_play', page_content).group(1))
+        config_url = urllib.parse.unquote(re.search('config_url=(.*?)auto_play', page_content).group(1))
         config_content = requests.post(config_url, data=dict(current_page=page_url), allow_redirects=True).content
         tree = ElementTree.fromstring(config_content)
         duration = tree.find('.//{default}preload/stream_info/metadata/duration').text
